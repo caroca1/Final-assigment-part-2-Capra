@@ -63,7 +63,7 @@ html.Div(id='output-container', className='chart-grid', style={'flex'}),])
 # Define the callback function to update the input container based on the selected statistics
 @app.callback(
     Output(component_id='select-year', component_property='disabled'),
-    Input(component_id='dropdown-statistics',component_property='disabled'))
+    Input(component_id='dropdown-statistics',component_property='value'))
 
 def update_input_container(selected_statistics):
     if selected_statistics =='Yearly Statistics': 
@@ -74,8 +74,8 @@ def update_input_container(selected_statistics):
 # Callback for plotting
 # Define the callback function to update the input container based on the selected statistics
 @app.callback(
-    Output(component_id='output-conteiner', component_property='children'),
-    [Input(component_id='dropdown-statistics', component_property='value'), Input(component_id='selected-year', component_property='value')])
+    Output(component_id='output-container', component_property='children'),
+    [Input(component_id='dropdown-statistics', component_property='value'), Input(component_id='select-year', component_property='value')])
 
 
 def update_output_container(selected_statistics, input_year):
@@ -127,10 +127,11 @@ def update_output_container(selected_statistics, input_year):
 
 
 # TASK 2.6: Create and display graphs for Yearly Report Statistics
-# Yearly Statistic Report Plots
-elif input_year and selected_statistics == 'Yearly Statistics':
-    yearly_data = data[data['Year'] == input_year]
-                                  
+ # Yearly Statistic Report Plots                             
+ # First check if the year is valid
+    elif( input_year and selected_statistics=='Yearly Statistics'):
+        yearly_data = data[data['Year'] == input_year]
+
 #TASK 2.5: Creating Graphs Yearly data
                               
 #plot 1 Yearly Automobile sales using line chart for the whole period.
@@ -149,7 +150,7 @@ elif input_year and selected_statistics == 'Yearly Statistics':
 
 # Plot bar chart for average number of vehicles sold during the given year
         avr_vdata=yearly_data.groupby('Vehicle_Type')['Automobile_Sales'].mean().reset_index()
-        Y_chart3 = dcc.Graph(figure=px.line(avr_vdata, 
+        Y_chart3 = dcc.Graph(figure=px.bar(avr_vdata, 
         x='Vehicle_Type',
         y='Automobile_Sales',
         title='Average Vehicles Sold by Vehicle Type in the year {}'.format(input_year)))
